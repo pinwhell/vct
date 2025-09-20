@@ -15,7 +15,7 @@ vct_bool print_int(void* itm, void* data) {
 
 int main()
 {
-	vct* v = vct_alloc(sizeof(char), 0u);
+	vct* v = VCT_ALLOC(char, 0u);
 
 	if (!v) return 1u;
 
@@ -32,7 +32,7 @@ int main()
 
 	vct_free(v);
 
-	v = vct_alloc(sizeof(float), 0);
+	v = VCT_ALLOC(float, 0);
 	vct_push_float(v, 3.14f);
 	vct_push_float(v, 2.718f);
 

@@ -45,6 +45,7 @@ extern "C" {
 		void* data;
 	} vct;
 
+#define VCT_ALLOC(T, capacity) vct_alloc(sizeof(T), capacity)
 	vct* vct_alloc(vct_size_t stride, vct_size_t capacity);
 	void vct_free(vct* v);
 	int vct_push_any(vct* v, const void* data, vct_size_t size);

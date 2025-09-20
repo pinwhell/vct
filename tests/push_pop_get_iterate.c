@@ -9,7 +9,7 @@ vct_bool print_int(void* itm, void* data) {
 }
 
 int main() {
-    vct* v = vct_alloc(sizeof(int), 0);
+    vct* v = VCT_ALLOC(int, 0);
 
     // Push integers
     for (int i = 1; i <= 5; i++)

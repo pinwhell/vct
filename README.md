@@ -23,7 +23,7 @@ A lightweight, allocator-aware, type-generic dynamic array implementation for C.
 #include <vct.h>
 
 int main() {
-    vct* v = vct_alloc(sizeof(int), 0);
+    vct* v = VCT_ALLOC(int, 0);
     vct_push_int(v, 42);
     int x;
     vct_get_int_at(v, 0, &x); // x == 42
@@ -43,7 +43,7 @@ vct_bool print_int(void* itm, void* data) {
 }
 
 int main() {
-    vct* v = vct_alloc(sizeof(int), 0);
+    vct* v = VCT_ALLOC(int, 0);
 
     // Push integers
     for (int i = 1; i <= 5; i++)
@@ -69,7 +69,7 @@ int main() {
 ```
 ## Float Example
 ```c
-vct* v = vct_alloc(sizeof(float), 0);
+vct* v = VCT_ALLOC(float, 0);
 vct_push_float(v, 3.14f);
 vct_push_float(v, 2.718f);
 
@@ -87,7 +87,7 @@ typedef struct {
 } Item;
 
 int main() {
-    vct* v = vct_alloc(sizeof(Item), 0);
+    vct* v = VCT_ALLOC(Item, 0);
 
     // Push a struct
     Item it = { 1, 3.14f };
@@ -105,7 +105,7 @@ int main() {
 ```
 ## API Highlights
 
--   **Allocation**: `vct_alloc(stride, capacity)`, `vct_free`
+-   **Allocation**: `VCT_ALLOC(T, capacity)`, `vct_free`
     
 -   **Push/Pop/Get**: `vct_push_T`, `vct_pop_T`, `vct_get_T_at`
     

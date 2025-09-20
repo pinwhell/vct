@@ -7,7 +7,7 @@ typedef struct {
 } Item;
 
 int main() {
-    vct* v = vct_alloc(sizeof(Item), 0);
+    vct* v = VCT_ALLOC(Item, 0);
 
     // Push a struct
     Item it = { 1, 3.14f };

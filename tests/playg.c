@@ -2,32 +2,27 @@
 #include <vct.h>
 #include <stdio.h>
 
-vct_bool test_cb(void* c, void* data) {
+bool test_cb(void* c, void* data) {
 	printf("%c", *(char*)c);
-	return 1u;
+	return true;
 }
 
-vct_bool print_int(void* itm, void* data) {
+bool print_int(void* itm, void* data) {
 	(void)data; // unused
 	printf("%d ", *(int*)itm);
-	return 1;  // continue iteration
+	return true;  // continue iteration
 }
 
 int main()
 {
 	vct v; if (VCT_INIT(&v, char, 0u)) return 1u;
-
 	vct_push_char(&v, 'H');
 	vct_push_char(&v, 'i');
 	vct_push_char(&v, '\0');
-
 	vct_for_each(&v, test_cb, NULL);
-
 	char c;
 	vct_get_char_at(&v, 0u, &c);
-
 	printf("%s%c", (char*)v.data, c);
-
 	vct_deinit(&v);
 
 	if (!VCT_INIT(&v, float, 0u)) return 1u;

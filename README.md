@@ -54,10 +54,14 @@ int main() {
     vct_pop_int(v, &val);
     printf("Popped: %d\n", val);
 
+    // Popped: 5
+
     // Iterate and print
     printf("Remaining elements: ");
     vct_for_each(v, print_int, NULL);
     printf("\n");
+
+    // Remaining elements: 1 2 3 4
 
     vct_free(v);
     return 0;

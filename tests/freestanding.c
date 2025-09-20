@@ -19,7 +19,7 @@ void* my_realloc(void* v, size_t sz)
 
 void my_free(void* v)
 {
-	printf("Freeing " PRIuPTR  "\n", v);
+	printf("Freeing %" PRIuPTR  "\n", v);
 	free(v);
 }
 
@@ -38,11 +38,11 @@ vct_allocators allocrs = {
 
 int main()
 {
-	vct v; vct_set_allocators_ref(&v, &allocrs);
-	if (VCT_INIT(&v, char, 0u)) return 1u;
+	vct* v = VCT_ALLOC(char, 0u, &allocrs);
+	if (!v) return 1u;
 	for (char i = '0'; i <= '9'; i++)
-		vct_push_char(&v, i);
-	vct_for_each(&v, test_cb, NULL);
-	vct_deinit(&v);
+		vct_push_char(v, i);
+	vct_for_each(v, test_cb, NULL);
+	vct_free(v);
 	return 0u;
 }

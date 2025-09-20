@@ -6,9 +6,6 @@ extern "C" {
 #endif
 
 #include <stddef.h>
-#ifndef VCT_FREESTANDING
-#include <stdlib.h>
-#endif
 
 #if __STDC_VERSION__ < 202311L
 #include <stdbool.h>
@@ -55,7 +52,9 @@ extern "C" {
 		void* data;
 		vct_allocators* allocatorsp;
 	} vct;
-
+#define VCT_ALLOC(T, capcity, allocators) vct_alloc(sizeof(T), capcity, allocators)
+	vct* vct_alloc(size_t stride, size_t capacity, vct_allocators* allocators);
+	void vct_free(vct* v);
 #define VCT_INIT(v, T, ...) vct_init(v, sizeof(T), __VA_ARGS__)
 	int vct_init(vct* v, size_t stride, size_t capacity);
 	void vct_deinit(vct* v);
@@ -108,8 +107,34 @@ extern "C" {
 	int vct_get_longlong_at(vct* v, size_t idx, long long* out);
 	int vct_get_float_at(vct* v, size_t idx, float* out);
 	int vct_get_double_at(vct* v, size_t idx, double* out);
-
 #ifdef VCT_IMPL
+
+#ifndef VCT_FREESTANDING
+#include <stdlib.h>
+	vct_allocators def_allocats = {
+		.malloc = malloc,
+		.realloc = realloc,
+		.free = free
+	};
+#endif
+
+	vct* vct_alloc(size_t stride, size_t capacity, vct_allocators* allocators)
+	{
+#ifdef VCT_FREESTANDING
+		if (allocators == NULL) return NULL;
+#else
+		if (allocators == NULL) allocators = &def_allocats;
+#endif
+		vct* v = allocators->malloc(sizeof(vct));
+		if (!v) return v;
+		vct_set_allocators(v, allocators);
+		int err = vct_init(v, stride, capacity);
+		if (err) {
+			allocators->free(v);
+			return NULL;
+		}
+		return v;
+	}
 
 	void* vct_calloc(vct* v, size_t count, size_t sz) {
 		if (!v->allocatorsp->malloc) return NULL;
@@ -129,23 +154,8 @@ extern "C" {
 		v->allocatorsp = &v->allocators_stg;
 	}
 
-#ifndef VCT_FREESTANDING
-	void vct_set_defallocators(vct* v)
-	{
-		vct_allocators def_allocats = {
-			.malloc = malloc,
-			.realloc = realloc,
-			.free = free
-		};
-		vct_set_allocators(v, &def_allocats);
-	}
-#endif
-
 	int vct_init(vct* v, size_t stride, size_t capacity)
 	{
-#ifndef VCT_FREESTANDING
-		vct_set_defallocators(v);
-#endif
 		if (!stride) return VCT_INVALID_ARG;
 		if (capacity && !(v->data = vct_calloc(v, capacity, stride)))
 			return VCT_FAILALLOC;
@@ -163,6 +173,13 @@ extern "C" {
 			v->allocatorsp->free(v->data);
 			v->data = NULL;
 		}
+	}
+
+	void vct_free(vct* v)
+	{
+		if (!v) return;
+		vct_deinit(v);
+		v->allocatorsp->free(v);
 	}
 
 	int vct_push_any(vct* v, const void* data, size_t size)

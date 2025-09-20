@@ -84,22 +84,30 @@ typedef struct {
 } Item;
 
 int main() {
-    vct v; if (VCT_INIT(&v, Item, 0)) return 1u;
+    vct* v = VCT_ALLOC(Item, 0u, NULL);
+    if (!v) return 1u;
 
     // Push a struct
     Item it = { 1, 3.14f };
-    vct_push_any(&v, &it, sizeof(it));
+    vct_push_any(v, &it, sizeof(it));
 
     // Get the struct back
     Item out;
-    vct_get_any_at(&v, 0, &out, sizeof(out));
+    vct_get_any_at(v, 0, &out, sizeof(out));
     printf("Item id: %d, value: %.2f\n", out.id, out.value);
-    vct_deinit(&v);
+    vct_free(v);
     return 0;
 }
 ```
 ## Freestanding
 ```c
+#define VCT_IMPL
+#define VCT_FREESTANDING
+#include "../include/vct.h"
+#include <inttypes.h>
+#include <stdlib.h> 
+#include <stdio.h>
+
 void* my_malloc(size_t sz)
 {
 	printf("Allocating %u bytes\n", sz);
@@ -114,7 +122,7 @@ void* my_realloc(void* v, size_t sz)
 
 void my_free(void* v)
 {
-	printf("Freeing " PRIuPTR  "\n", v);
+	printf("Freeing %" PRIuPTR  "\n", v);
 	free(v);
 }
 
@@ -125,19 +133,20 @@ bool test_cb(void* itm, void* data)
 	return true;
 }
 
+vct_allocators allocrs = {
+	.malloc = my_malloc,
+	.free = my_free,
+	.realloc = my_realloc
+};
+
 int main()
 {
-	vct_allocators allocrs = {
-		.malloc = my_malloc,
-		.free = my_free,
-		.realloc = my_realloc
-	};
-	vct v; vct_set_allocators(&v, &allocrs);
-	if (!VCT_INIT(&v, char, 0u)) return 1u;
+	vct* v = VCT_ALLOC(char, 0u, &allocrs);
+	if (!v) return 1u;
 	for (char i = '0'; i <= '9'; i++)
-		vct_push_char(&v, i);
-	vct_for_each(&v, test_cb, NULL);
-	vct_deinit(&v);
+		vct_push_char(v, i);
+	vct_for_each(v, test_cb, NULL);
+	vct_free(v);
 	return 0u;
 }
 ```

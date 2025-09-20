@@ -100,7 +100,7 @@ int main() {
 ```
 ## API Highlights
 
--   **Allocation**: `VCT_ALLOC(T, capacity)`, `vct_free`
+-   **Allocation**: `VCT_INIT(v, T, capacity)`, `vct_free`
     
 -   **Push/Pop/Get**: `vct_push_T`, `vct_pop_T`, `vct_get_T_at`
     

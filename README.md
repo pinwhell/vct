@@ -20,7 +20,6 @@ A lightweight, allocator-aware, type-generic dynamic array implementation for C.
 
 
 ```c
-#define VCT_IMPL
 #include <vct.h>
 
 int main() {
@@ -34,7 +33,6 @@ int main() {
 ## Push, Pop, Get, Iterate
 ```c
 #include <stdio.h>
-#define VCT_IMPL
 #include <vct.h>
 
 // Callback for vct_for_each

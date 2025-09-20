@@ -23,11 +23,11 @@ A lightweight, allocator-aware, type-generic dynamic array implementation for C.
 #include <vct.h>
 
 int main() {
-    vct* v = VCT_ALLOC(int, 0);
-    vct_push_int(v, 42);
+    vct v; VCT_INIT(&v, int, 0);
+    vct_push_int(&v, 42);
     int x;
-    vct_get_int_at(v, 0, &x); // x == 42
-    vct_free(v);
+    vct_get_int_at(&v, 0, &x); // x == 42
+    vct_deinit(&v);
 }
 ```
 ## Push, Pop, Get, Iterate
@@ -43,63 +43,58 @@ vct_bool print_int(void* itm, void* data) {
 }
 
 int main() {
-    vct* v = VCT_ALLOC(int, 0);
+    vct v; if (VCT_INIT(&v, int, 0u)) return 1u;
 
     // Push integers
     for (int i = 1; i <= 5; i++)
-        vct_push_int(v, i);
+        vct_push_int(&v, i);
 
     // Pop last element
     int val;
-    vct_pop_int(v, &val);
+    vct_pop_int(&v, &val);
     printf("Popped: %d\n", val);
-
-    // Popped: 5
 
     // Iterate and print
     printf("Remaining elements: ");
-    vct_for_each(v, print_int, NULL);
+    vct_for_each(&v, print_int, NULL);
     printf("\n");
 
-    // Remaining elements: 1 2 3 4
-
-    vct_free(v);
+    vct_deinit(&v);
     return 0;
 }
 ```
 ## Float Example
 ```c
-vct* v = VCT_ALLOC(float, 0);
-vct_push_float(v, 3.14f);
-vct_push_float(v, 2.718f);
+vct v; if (!VCT_INIT(&v, float, 0u)) return 1u;
+vct_push_float(&v, 3.14f);
+vct_push_float(&v, 2.718f);
 
 float f;
-vct_pop_float(v, &f); // f == 2.718
-
-vct_free(v);
+vct_pop_float(&v, &f); // f == 2.718
+vct_deinit(&v);
 ```
 ## Generic Any-Type Example
 ```c
-// Example struct
+#include <stdio.h>
+#include <vct.h>
+
 typedef struct {
     int id;
     float value;
 } Item;
 
 int main() {
-    vct* v = VCT_ALLOC(Item, 0);
+    vct v; if (VCT_INIT(&v, Item, 0)) return 1u;
 
     // Push a struct
     Item it = { 1, 3.14f };
-    vct_push_any(v, &it, sizeof(it));
+    vct_push_any(&v, &it, sizeof(it));
 
     // Get the struct back
     Item out;
-    vct_get_any_at(v, 0, &out, sizeof(out));
-
+    vct_get_any_at(&v, 0, &out, sizeof(out));
     printf("Item id: %d, value: %.2f\n", out.id, out.value);
-
-    vct_free(v);
+    vct_deinit(&v);
     return 0;
 }
 ```

@@ -15,29 +15,27 @@ vct_bool print_int(void* itm, void* data) {
 
 int main()
 {
-	vct* v = VCT_ALLOC(char, 0u);
+	vct v; if (VCT_INIT(&v, char, 0u)) return 1u;
 
-	if (!v) return 1u;
+	vct_push_char(&v, 'H');
+	vct_push_char(&v, 'i');
+	vct_push_char(&v, '\0');
 
-	vct_push_char(v, 'H');
-	vct_push_char(v, 'i');
-	vct_push_char(v, '\0');
-
-	vct_for_each(v, test_cb, NULL);
+	vct_for_each(&v, test_cb, NULL);
 
 	char c;
-	vct_get_char_at(v, 0u, &c);
+	vct_get_char_at(&v, 0u, &c);
 
-	printf("%s%c", (char*)v->data, c);
+	printf("%s%c", (char*)v.data, c);
 
-	vct_free(v);
+	vct_deinit(&v);
 
-	v = VCT_ALLOC(float, 0);
-	vct_push_float(v, 3.14f);
-	vct_push_float(v, 2.718f);
+	if (!VCT_INIT(&v, float, 0u)) return 1u;
+	vct_push_float(&v, 3.14f);
+	vct_push_float(&v, 2.718f);
 
 	float f;
-	vct_pop_float(v, &f); // f == 2.718
+	vct_pop_float(&v, &f); // f == 2.718
 
-	vct_free(v);
+	vct_deinit(&v);
 }

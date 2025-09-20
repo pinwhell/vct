@@ -33,17 +33,37 @@ int main() {
 ```
 ## Push, Pop, Get, Iterate
 ```c
-vct* v = vct_alloc(sizeof(int), 0);
-for (int i = 1; i <= 5; i++) vct_push_int(v, i);
+#include <stdio.h>
+#define VCT_IMPL
+#include <vct.h>
 
-int val;
-vct_pop_int(v, &val); // last element
-vct_for_each(v, /*pseudo cb*/[](void* itm, void* data){ 
-    printf("%d ", *(int*)itm); 
-    return 1; 
-}, NULL);
+// Callback for vct_for_each
+vct_bool print_int(void* itm, void* data) {
+    (void)data; // unused
+    printf("%d ", *(int*)itm);
+    return 1;  // continue iteration
+}
 
-vct_free(v);
+int main() {
+    vct* v = vct_alloc(sizeof(int), 0);
+
+    // Push integers
+    for (int i = 1; i <= 5; i++)
+        vct_push_int(v, i);
+
+    // Pop last element
+    int val;
+    vct_pop_int(v, &val);
+    printf("Popped: %d\n", val);
+
+    // Iterate and print
+    printf("Remaining elements: ");
+    vct_for_each(v, print_int, NULL);
+    printf("\n");
+
+    vct_free(v);
+    return 0;
+}
 ```
 ## Float Example
 ```c

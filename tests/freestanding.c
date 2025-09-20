@@ -30,14 +30,15 @@ bool test_cb(void* itm, void* data)
 	return true;
 }
 
+vct_allocators allocrs = {
+	.malloc = my_malloc,
+	.free = my_free,
+	.realloc = my_realloc
+};
+
 int main()
 {
-	vct_allocators allocrs = {
-		.malloc = my_malloc,
-		.free = my_free,
-		.realloc = my_realloc
-	};
-	vct v; vct_set_allocators(&v, &allocrs);
+	vct v; vct_set_allocators_ref(&v, &allocrs);
 	if (VCT_INIT(&v, char, 0u)) return 1u;
 	for (char i = '0'; i <= '9'; i++)
 		vct_push_char(&v, i);

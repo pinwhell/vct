@@ -7,6 +7,12 @@ vct_bool test_cb(void* c, void* data) {
 	return 1u;
 }
 
+vct_bool print_int(void* itm, void* data) {
+	(void)data; // unused
+	printf("%d ", *(int*)itm);
+	return 1;  // continue iteration
+}
+
 int main()
 {
 	vct* v = vct_alloc(sizeof(char), 0u);
@@ -23,6 +29,15 @@ int main()
 	vct_get_char_at(v, 0u, &c);
 
 	printf("%s%c", (char*)v->data, c);
+
+	vct_free(v);
+
+	v = vct_alloc(sizeof(float), 0);
+	vct_push_float(v, 3.14f);
+	vct_push_float(v, 2.718f);
+
+	float f;
+	vct_pop_float(v, &f); // f == 2.718
 
 	vct_free(v);
 }

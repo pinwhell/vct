@@ -9,7 +9,7 @@ bool print_int(void* itm, void* data) {
 }
 
 int main() {
-    vct v; if (VCT_INIT(&v, int, 0u)) return 1u;
+    vct v = { 0 }; if (VCT_INIT(&v, int, 0u)) return 1u;
 
     // Push integers
     for (int i = 1; i <= 5; i++)

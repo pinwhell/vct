@@ -157,6 +157,9 @@ extern "C" {
 	int vct_init(vct* v, size_t stride, size_t capacity)
 	{
 		if (!stride) return VCT_INVALID_ARG;
+#ifndef VCT_FREESTANDING
+		if (!v->allocatorsp) vct_set_allocators_ref(v, &def_allocats);
+#endif
 		if (capacity && !(v->data = vct_calloc(v, capacity, stride)))
 			return VCT_FAILALLOC;
 		else v->data = NULL;
@@ -173,6 +176,7 @@ extern "C" {
 			v->allocatorsp->free(v->data);
 			v->data = NULL;
 		}
+		v->allocatorsp = NULL;
 	}
 
 	void vct_free(vct* v)

@@ -15,7 +15,7 @@ bool print_int(void* itm, void* data) {
 
 int main()
 {
-	vct v; if (VCT_INIT(&v, char, 0u)) return 1u;
+	vct v = { 0 }; if (VCT_INIT(&v, char, 0u)) return 1u;
 	vct_push_char(&v, 'H');
 	vct_push_char(&v, 'i');
 	vct_push_char(&v, '\0');

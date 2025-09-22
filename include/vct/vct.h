@@ -70,7 +70,13 @@ extern "C" {
 VCT_GET_DEF(shorthand, T) \
 VCT_POP_DEF(shorthand, T) \
 VCT_PUSH_DEF(shorthand, T)
+// By Ref
+#define VCT_OP_BREF_GEN(shorthand, T) \
+VCT_GET_DEF(shorthand, T) \
+VCT_POP_DEF(shorthand, T) \
+VCT_PUSH_BREF_DEF(shorthand, T)
 
+#define VCT_PUSH_BREF_DEF(shorthand, T) int vct_push_##shorthand(vct* v,const T* obj) { return vct_push_any(v, obj, sizeof(T)); }
 #define VCT_PUSH_DEF(shorthand, T) int vct_push_##shorthand(vct* v, T obj) { return vct_push_any(v, &obj, sizeof(obj)); }
 #define VCT_POP_DEF(shorthand, T) int vct_pop_##shorthand(vct* v, T* out) { return vct_pop_any(v, out, sizeof(T)); }
 #define VCT_GET_DEF(shorthand, T) int vct_get_##shorthand##_at(vct* v, size_t idx, T* out) { return vct_get_any_at(v, idx, out, sizeof(T)); }

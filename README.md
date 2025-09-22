@@ -5,7 +5,7 @@ A lightweight, allocator-aware, type-generic dynamic array implementation for C.
 
 ## Features
 
--   Generic `vct_push_any`, `vct_pop_any`, `vct_get_any_at`
+-   Generic `VCT_OP_GEN(shorthand, T)`, `VCT_OP_REF_GEN(shorthand, T)`,`vct_push_any`, `vct_pop_any`, `vct_get_any_at`
     
 -   Type-safe wrappers for all primitive C types (`int`, `float`, `double`, etc.)
     
@@ -83,7 +83,7 @@ typedef struct {
     float value;
 } Item;
 
-VCT_OP_BREF_GEN(itm, Item)
+VCT_OP_REF_GEN(itm, Item)
 
 int main() {
     vct* v = VCT_ALLOC(Item, 0u, NULL);
@@ -91,7 +91,7 @@ int main() {
 
     // Push a struct
     Item it = { 1, 3.14f };
-    vct_push_itm(v, &it);
+    vct_push_itmp(v, &it);
 
     // Get the struct back
     Item out;

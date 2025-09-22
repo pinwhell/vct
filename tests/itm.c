@@ -6,7 +6,7 @@ typedef struct {
     float value;
 } Item;
 
-VCT_OP_BREF_GEN(itm, Item)
+VCT_OP_REF_GEN(itm, Item)
 
 int main() {
     vct* v = VCT_ALLOC(Item, 0u, NULL);
@@ -14,7 +14,7 @@ int main() {
 
     // Push a struct
     Item it = { 1, 3.14f };
-    vct_push_itm(v, &it);
+    vct_push_itmp(v, &it);
 
     // Get the struct back
     Item out;

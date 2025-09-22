@@ -182,8 +182,9 @@ extern "C" {
 	void vct_free(vct* v)
 	{
 		if (!v) return;
+		void(*free)(void*) = v->allocatorsp->free;
 		vct_deinit(v);
-		v->allocatorsp->free(v);
+		free(v);
 	}
 
 	int vct_push_any(vct* v, const void* data, size_t size)

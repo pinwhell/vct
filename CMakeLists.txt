@@ -11,6 +11,4 @@ target_compile_definitions(vct PUBLIC VCT_FREESTANDING)
 endif()
 
 target_include_directories(vct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-
 add_subdirectory(tests)

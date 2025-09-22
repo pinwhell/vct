@@ -1,5 +1,5 @@
+#include <vct/vct.h>
 #include <stdio.h>
-#include <vct.h>
 
 // Callback for vct_for_each
 bool print_int(void* itm, void* data) {

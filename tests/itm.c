@@ -1,5 +1,5 @@
+#include <vct/vct.h>
 #include <stdio.h>
-#include <vct.h>
 
 typedef struct {
     int id;

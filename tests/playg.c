@@ -1,5 +1,5 @@
 
-#include <vct.h>
+#include <vct/vct.h>
 #include <stdio.h>
 
 bool test_cb(void* c, void* data) {

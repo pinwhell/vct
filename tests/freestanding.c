@@ -1,6 +1,9 @@
 #define VCT_IMPL
 #define VCT_FREESTANDING
-#include "../include/vct.h"
+#define MM_FREESTANDING
+#define MM_IMPL
+#include "../vendor/mm.h"
+#include "../include/vct/vct.h"
 #include <inttypes.h>
 #include <stdlib.h> 
 #include <stdio.h>
@@ -8,19 +11,19 @@
 void* my_malloc(size_t sz)
 {
 	printf("Allocating %u bytes\n", sz);
-	return malloc(sz);
+	return mm_alloc(sz);
 }
 
 void* my_realloc(void* v, size_t sz)
 {
 	printf("Reallocating %u bytes\n", sz);
-	return realloc(v, sz);
+	return mm_realloc(v, sz);
 }
 
 void my_free(void* v)
 {
 	printf("Freeing %" PRIuPTR  "\n", v);
-	free(v);
+	mm_free(v);
 }
 
 bool test_cb(void* itm, void* data)
@@ -38,6 +41,8 @@ vct_allocators allocrs = {
 
 int main()
 {
+	char arena[0x1000u];
+	mm_add_arena(arena, sizeof(arena));
 	vct* v = VCT_ALLOC(char, 0u, &allocrs);
 	if (!v) return 1u;
 	for (char i = '0'; i <= '9'; i++)

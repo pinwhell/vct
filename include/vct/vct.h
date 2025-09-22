@@ -66,6 +66,15 @@ extern "C" {
 	int vct_get_any_at(vct* v, size_t idx, void* out, size_t sz);
 	void vct_for_each(vct* v, tvct_for_each_cb cb, void* data);
 
+#define VCT_OP_GEN(shorthand, T) \
+VCT_GET_DEF(shorthand, T) \
+VCT_POP_DEF(shorthand, T) \
+VCT_PUSH_DEF(shorthand, T)
+
+#define VCT_PUSH_DEF(shorthand, T) int vct_push_##shorthand(vct* v, T obj) { return vct_push_any(v, &obj, sizeof(obj)); }
+#define VCT_POP_DEF(shorthand, T) int vct_pop_##shorthand(vct* v, T* out) { return vct_pop_any(v, out, sizeof(T)); }
+#define VCT_GET_DEF(shorthand, T) int vct_get_##shorthand##_at(vct* v, size_t idx, T* out) { return vct_get_any_at(v, idx, out, sizeof(T)); }
+
 	// Push
 	int vct_push_uchar(vct* v, unsigned char obj);
 	int vct_push_ushort(vct* v, unsigned short obj);
@@ -107,6 +116,7 @@ extern "C" {
 	int vct_get_longlong_at(vct* v, size_t idx, long long* out);
 	int vct_get_float_at(vct* v, size_t idx, float* out);
 	int vct_get_double_at(vct* v, size_t idx, double* out);
+#define VCT_IMPL
 #ifdef VCT_IMPL
 
 #ifndef VCT_FREESTANDING
@@ -235,45 +245,18 @@ extern "C" {
 				break;
 	}
 
-#define VCT_PUSH_DEF(shorthand, T) int vct_push_##shorthand(vct* v, T obj) { return vct_push_any(v, &obj, sizeof(obj)); }
-#define VCT_POP_DEF(shorthand, T) int vct_pop_##shorthand(vct* v, T* out) { return vct_pop_any(v, out, sizeof(T)); }
-#define VCT_GET_DEF(shorthand, T) int vct_get_##shorthand##_at(vct* v, size_t idx, T* out) { return vct_get_any_at(v, idx, out, sizeof(T)); }
-	VCT_PUSH_DEF(uchar, unsigned char)
-		VCT_PUSH_DEF(ushort, unsigned short)
-		VCT_PUSH_DEF(uint, unsigned int)
-		VCT_PUSH_DEF(ulong, unsigned long)
-		VCT_PUSH_DEF(ulonglong, unsigned long long)
-		VCT_PUSH_DEF(char, char)
-		VCT_PUSH_DEF(short, short)
-		VCT_PUSH_DEF(int, int)
-		VCT_PUSH_DEF(long, long)
-		VCT_PUSH_DEF(longlong, long long)
-		VCT_PUSH_DEF(float, float)
-		VCT_PUSH_DEF(double, double)
-		VCT_POP_DEF(uchar, unsigned char)
-		VCT_POP_DEF(ushort, unsigned short)
-		VCT_POP_DEF(uint, unsigned int)
-		VCT_POP_DEF(ulong, unsigned long)
-		VCT_POP_DEF(ulonglong, unsigned long long)
-		VCT_POP_DEF(char, char)
-		VCT_POP_DEF(short, short)
-		VCT_POP_DEF(int, int)
-		VCT_POP_DEF(long, long)
-		VCT_POP_DEF(longlong, long long)
-		VCT_POP_DEF(float, float)
-		VCT_POP_DEF(double, double)
-		VCT_GET_DEF(uchar, unsigned char)
-		VCT_GET_DEF(ushort, unsigned short)
-		VCT_GET_DEF(uint, unsigned int)
-		VCT_GET_DEF(ulong, unsigned long)
-		VCT_GET_DEF(ulonglong, unsigned long long)
-		VCT_GET_DEF(char, char)
-		VCT_GET_DEF(short, short)
-		VCT_GET_DEF(int, int)
-		VCT_GET_DEF(long, long)
-		VCT_GET_DEF(longlong, long long)
-		VCT_GET_DEF(float, float)
-		VCT_GET_DEF(double, double)
+	VCT_OP_GEN(uchar, unsigned char)
+	VCT_OP_GEN(ushort, unsigned short)
+	VCT_OP_GEN(uint, unsigned int)
+	VCT_OP_GEN(ulong, unsigned long)
+	VCT_OP_GEN(ulonglong, unsigned long long)
+	VCT_OP_GEN(char, char)
+	VCT_OP_GEN(short, short)
+	VCT_OP_GEN(int, int)
+	VCT_OP_GEN(long, long)
+	VCT_OP_GEN(longlong, long long)
+	VCT_OP_GEN(float, float)
+	VCT_OP_GEN(double, double)
 #endif
 
 #ifdef __cplusplus

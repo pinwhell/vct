@@ -20,7 +20,7 @@ A lightweight, allocator-aware, type-generic dynamic array implementation for C.
 
 
 ```c
-#include <vct.h>
+#include <vct/vct.h>
 
 int main() {
     vct v; VCT_INIT(&v, int, 0);
@@ -33,7 +33,7 @@ int main() {
 ## Push, Pop, Get, Iterate
 ```c
 #include <stdio.h>
-#include <vct.h>
+#include <vct/vct.h>
 
 // Callback for vct_for_each
 vct_bool print_int(void* itm, void* data) {
@@ -75,13 +75,15 @@ vct_deinit(&v);
 ```
 ## Generic Any-Type Example
 ```c
+#include <vct/vct.h>
 #include <stdio.h>
-#include <vct.h>
 
 typedef struct {
     int id;
     float value;
 } Item;
+
+VCT_OP_BREF_GEN(itm, Item)
 
 int main() {
     vct* v = VCT_ALLOC(Item, 0u, NULL);
@@ -89,11 +91,11 @@ int main() {
 
     // Push a struct
     Item it = { 1, 3.14f };
-    vct_push_any(v, &it, sizeof(it));
+    vct_push_itm(v, &it);
 
     // Get the struct back
     Item out;
-    vct_get_any_at(v, 0, &out, sizeof(out));
+    vct_get_itm_at(v, 0, &out);
     printf("Item id: %d, value: %.2f\n", out.id, out.value);
     vct_free(v);
     return 0;
@@ -103,7 +105,7 @@ int main() {
 ```c
 #define VCT_IMPL
 #define VCT_FREESTANDING
-#include "../include/vct.h"
+#include "../include/vct/vct.h"
 #include <inttypes.h>
 #include <stdlib.h> 
 #include <stdio.h>
